@@ -27,24 +27,29 @@ Linux compatibility; multi-hart SMP; cycle-accurate pipelines and caches; dynami
 ## Planned architecture
 
 ```text
-Guest: WUWAOS / bare-metal RV64 ELF
-                  |
-                  v
-+------------------- WUWACP (host C++20) --------------------+
-| Machine / boot mode / device-tree / virtual clock          |
-|    +-----------+       +-------------------------------+   |
-|    | RV64 Hart | <---> | Bus / guest physical memory   |   |
-|    | GPR, PC   |       | RAM, MMIO, ELF image           |   |
-|    | decoder   |       +-------------------------------+   |
-|    | CSR/trap  |                       |                   |
-|    | Sv39 MMU  |            +----------+----------------+  |
-|    +-----------+            | UART / timer / PLIC       |  |
-|                             | VirtIO MMIO + block disk |  |
-|                             +---------------------------+  |
-+------------------------------------------------------------+
-                  |
-                  v
-        Host: Linux (first) / Windows (later)
+              Guest: WUWAOS / bare-metal RV64 ELF
+                               |
+                               v
++--------------------------------------------------------------+
+|                     WUWACP (host C++20)                      |
+|                                                              |
+|  +---------------------+    +----------------------------+   |
+|  | RV64 Hart           |    | Physical Bus               |   |
+|  | GPR / PC            |<-->| RAM / ROM                  |   |
+|  | Decode / Execute    |    | MMIO mapping               |   |
+|  | CSR / Trap          |    | DMA access                 |   |
+|  | Sv39 MMU            |    +----------------------------+   |
+|  +---------------------+                  |                  |
+|                                           v                  |
+|                             +----------------------------+   |
+|                             | MMIO Devices               |   |
+|                             | UART / Timer / PLIC        |   |
+|                             | VirtIO MMIO + Block Disk   |   |
+|                             +----------------------------+   |
++--------------------------------------------------------------+
+                               |
+                               v
+             Host: Linux (first) / Windows (later)
 ```
 
 The CPU must access devices through the physical bus rather than calling guest-specific OS functions. VirtIO must model guest-visible queues and DMA; it must not bypass the guest driver with host-side syscall forwarding. Guest faults and interrupts change guest architectural state; they must not crash the host.
