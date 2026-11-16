@@ -1,0 +1,47 @@
+# Out-of-tree CMake / IDE build directories
+/build/
+/cmake-build-*/
+/out/
+/CMakeFiles/
+/CMakeCache.txt/
+/compile_commands.json
+/Testing/
+
+# Compiler and linker intermediates
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.ilk
+*.d
+
+# Generated guest and firmware artifacts (keep explicit test fixtures in version control when needed)
+*.img
+*.qcow2
+*.iso
+*.bin
+*.elf
+*.map
+
+# Local traces, caches, editor, environment
+*.log
+*.trace
+*.tmp
+*.swp
+*.swo
+*.bak
+.DS_Store
+__pycache__/
+.pytest_cache/
+.cache/
+.vs/
+.vscode/
+.idea/
+
+# Explicit fixture exception for small checked-in regression images
+!tests/fixtures/*.elf
+!tests/fixtures/*.bin
